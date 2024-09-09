@@ -12,8 +12,5 @@ class Book(models.Model):
     inventory = models.PositiveIntegerField(default=0)
     daily_fee = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
-    class Meta:
-        ordering = ["title"]
-
     def __str__(self):
         return f"{self.title}, author: {self.author}, left: {self.inventory}"
