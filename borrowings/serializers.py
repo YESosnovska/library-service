@@ -50,3 +50,9 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
                     "You already have an active borrowing."
                 )
         return attrs
+
+
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = ["actual_return_date"]

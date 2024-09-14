@@ -1,8 +1,11 @@
 from django.db.models import F
 from django.shortcuts import render
-from rest_framework import viewsets, mixins
+from django.utils import timezone
+from rest_framework import viewsets, mixins, status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from borrowings.models import Borrowing
@@ -10,6 +13,7 @@ from borrowings.serializers import (
     BorrowingSerializer,
     BorrowingDetailSerializer,
     BorrowingCreateSerializer,
+    BorrowingReturnSerializer,
 )
 
 
@@ -17,6 +21,7 @@ class BorrowingViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
     GenericViewSet,
 ):
     queryset = Borrowing.objects.select_related("user", "book")
@@ -25,6 +30,9 @@ class BorrowingViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return BorrowingDetailSerializer
+
+        if self.action == "return_book":
+            return BorrowingReturnSerializer
 
         if self.action == "create":
             return BorrowingCreateSerializer
@@ -74,3 +82,17 @@ class BorrowingViewSet(
             queryset = queryset.filter(user=user_id)
 
         return queryset.distinct()
+
+    @action(detail=True, methods=["post"])
+    def return_book(self, request, pk=None):
+        borrowing = self.get_object()
+
+        borrowing.actual_return_date = timezone.now().date()
+        borrowing.save()
+
+        borrowing.book.inventory += 1
+        borrowing.book.save()
+
+        return Response(
+            {"message": "Book returned successfully."}, status=status.HTTP_200_OK
+        )
