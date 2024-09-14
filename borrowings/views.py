@@ -23,6 +23,15 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
         return BorrowingSerializer
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        user = self.request.user
+
+        if user.is_staff:
+            return queryset
+
+        return queryset.filter(user=user, actual_return_date__isnull=True)
+
     def perform_create(self, serializer):
         user = self.request.user
         active_borrowings = Borrowing.objects.filter(
