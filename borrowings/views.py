@@ -39,3 +39,5 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
         book.inventory -= 1
         book.save()
+        instance = serializer.save(user=user)
+        return instance
