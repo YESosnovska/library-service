@@ -1,6 +1,9 @@
+import datetime
+
 from django.db.models import F
 from django.shortcuts import render
 from rest_framework import viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
@@ -10,6 +13,7 @@ from borrowings.serializers import (
     BorrowingSerializer,
     BorrowingDetailSerializer,
     BorrowingCreateSerializer,
+    BorrowingReturnSerializer,
 )
 
 
@@ -25,6 +29,9 @@ class BorrowingViewSet(
     def get_serializer_class(self):
         if self.action == "retrieve":
             return BorrowingDetailSerializer
+
+        if self.action == "return_book":
+            return BorrowingReturnSerializer
 
         if self.action == "create":
             return BorrowingCreateSerializer
@@ -74,3 +81,13 @@ class BorrowingViewSet(
             queryset = queryset.filter(user=user_id)
 
         return queryset.distinct()
+
+    @action(detail=True, methods=["post"])
+    def return_book(self, request, pk=None):
+        borrowing = self.get_object()
+
+        borrowing.actual_return_date = datetime.date.today()
+        borrowing.save()
+
+        borrowing.book.inventory += 1
+        borrowing.book.save()
