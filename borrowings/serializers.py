@@ -21,8 +21,8 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
 
 class BorrowingListSerializer(serializers.ModelSerializer):
-    book_id = serializers.CharField(source="book.book_id", read_only=True)
-    user_id = serializers.CharField(source="user.user_id", read_only=True)
+    book_id = serializers.IntegerField(source="book.book_id", read_only=True)
+    user_id = serializers.IntegerField(source="user.user_id", read_only=True)
 
     class Meta:
         model = Borrowing
