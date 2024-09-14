@@ -61,6 +61,7 @@ class BorrowingViewSet(
 
     def get_queryset(self):
         is_active = self.request.query_params.get("is_active")
+        user_id = self.request.query_params.get("user_id")
 
         queryset = self.queryset
 
@@ -69,5 +70,7 @@ class BorrowingViewSet(
                 queryset = queryset.filter(actual_return_date__isnull=True)
             elif is_active.lower() == "false":
                 queryset = queryset.filter(actual_return_date__isnull=False)
+        if self.request.user.is_staff and user_id:
+            queryset = queryset.filter(user=user_id)
 
         return queryset.distinct()
