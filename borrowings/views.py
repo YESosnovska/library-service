@@ -1,22 +1,19 @@
 from django.shortcuts import render
+from rest_framework import viewsets
 from rest_framework.viewsets import GenericViewSet
 
 from borrowings.models import Borrowing
 from borrowings.serializers import (
     BorrowingSerializer,
-    BorrowingListSerializer,
     BorrowingDetailSerializer,
 )
 
 
-class BorrowingViewSet(GenericViewSet):
-    queryset = Borrowing.objects.all()
+class BorrowingViewSet(viewsets.ModelViewSet):
+    queryset = Borrowing.objects.select_related("user", "book")
     serializer_class = BorrowingSerializer
 
-    def get_queryset(self):
-        if self.action == "list":
-            return BorrowingListSerializer
-
+    def get_serializer_class(self):
         if self.action == "retrieve":
             return BorrowingDetailSerializer
 

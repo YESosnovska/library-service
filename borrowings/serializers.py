@@ -5,9 +5,6 @@ from library.serializers import BookSerializer
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
-    book_id = serializers.CharField(source="book.book_id", read_only=True)
-    user_id = serializers.CharField(source="user.user_id", read_only=True)
-
     class Meta:
         model = Borrowing
         fields = (
@@ -15,30 +12,13 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "actual_return_date",
-            "book_id",
-            "user_id",
+            "book",
+            "user",
         )
 
 
-class BorrowingListSerializer(serializers.ModelSerializer):
-    book_id = serializers.IntegerField(source="book.book_id", read_only=True)
-    user_id = serializers.IntegerField(source="user.user_id", read_only=True)
-
-    class Meta:
-        model = Borrowing
-        fields = (
-            "id",
-            "borrow_date",
-            "expected_return_date",
-            "actual_return_date",
-            "book_id",
-            "user_id",
-        )
-
-
-class BorrowingDetailSerializer(BorrowingSerializer):
-    book = BookSerializer(many=False, read_only=True)
-    user_id = serializers.CharField(source="user.user_id", read_only=True)
+class BorrowingDetailSerializer(serializers.ModelSerializer):
+    book = BookSerializer()
 
     class Meta:
         model = Borrowing
@@ -48,5 +28,5 @@ class BorrowingDetailSerializer(BorrowingSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            "user_id",
+            "user",
         )
