@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.shortcuts import render
 from rest_framework import viewsets, mixins
 from rest_framework.exceptions import ValidationError
@@ -57,3 +58,16 @@ class BorrowingViewSet(
         book.save()
         instance = serializer.save(user=user)
         return instance
+
+    def get_queryset(self):
+        is_active = self.request.query_params.get("is_active")
+
+        queryset = self.queryset
+
+        if is_active is not None:
+            if is_active.lower() == "true":
+                queryset = queryset.filter(actual_return_date__isnull=True)
+            elif is_active.lower() == "false":
+                queryset = queryset.filter(actual_return_date__isnull=False)
+
+        return queryset.distinct()
