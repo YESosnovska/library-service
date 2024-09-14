@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
 
 from borrowings.models import Borrowing
@@ -11,8 +12,14 @@ from borrowings.serializers import (
 )
 
 
-class BorrowingViewSet(viewsets.ModelViewSet):
+class BorrowingViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
     queryset = Borrowing.objects.select_related("user", "book")
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == "retrieve":
