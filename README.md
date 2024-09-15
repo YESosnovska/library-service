@@ -50,25 +50,27 @@ API service for local library service management written on DRF
 2. Create a virtual environment and activate it
 ```shell
   python -m venv venv
-  source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+  source venv/bin/activate # On Windows use `venv\Scripts\activate`
 ```
 
-3. Install requirements
+3. Create .env file with SECRET_KEY using .env.sample
+
+4. Install requirements
 ```shell
   pip install -r requirements.txt
 ```
 
-4. Apply migrations
+5. Apply migrations
 ```shell
   python manage.py migrate
 ```
 
-5. Create superuser
+6. Create superuser
 ```shell
   python manage.py createsuperuser
 ```
 
-6. Run server
+7. Run server
 ```shell
   python manage.py runserver
 ```
@@ -76,3 +78,5 @@ API service for local library service management written on DRF
 You also can register new non-admin user using ```api/users/```
 
 You also need to obtain token in ```api/users/token/``` page
+
+
