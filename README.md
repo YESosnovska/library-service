@@ -79,4 +79,7 @@ You also can register new non-admin user using ```api/users/```
 
 You also need to obtain token in ```api/users/token/``` page
 
-
+## Used technologies
+- Python
+- Django ORM
+- Django REST Framework
