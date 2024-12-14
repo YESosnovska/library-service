@@ -83,3 +83,4 @@ You also need to obtain token in ```api/users/token/``` page
 - Python
 - Django ORM
 - Django REST Framework
+- Swagger
